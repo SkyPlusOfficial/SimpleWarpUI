@@ -43,8 +43,6 @@ use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
 class SimpleWarpUI extends PluginBase{
-	public const LIST_FORM_TAG = "SimpleWarpUI.WarpList";
-
 	/** @var SimpleWarp */
 	private $swApi;
 
@@ -76,10 +74,8 @@ class SimpleWarpUI extends PluginBase{
 
 			foreach($this->swApi->getWarpManager() as $warp){
 				/** @var Warp $warp */
-				if($warp->canUse($sender)){
-					$warps[] = $warp;
-					$form->addButton($warp->getName() . ($sender->hasPermission(SimpleWarpPermissions::LIST_WARPS_COMMAND_XYZ) ? (" (" . $warp->getDestination()->toString() . ")") : ""));
-				}
+				$warps[] = $warp;
+				$form->addButton($warp->getName() . ($sender->hasPermission(SimpleWarpPermissions::LIST_WARPS_COMMAND_XYZ) ? (" (" . $warp->getDestination()->toString() . ")") : ""));
 			}
 
 			$sender->sendForm($form);
