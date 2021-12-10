@@ -33,11 +33,12 @@ declare(strict_types=1);
 
 namespace SOFe\Tests\MosaicForms\SimpleWarpUI;
 
+use falkirks\simplewarp\permission\SimpleWarpPermissions;
 use falkirks\simplewarp\SimpleWarp;
 use falkirks\simplewarp\Warp;
+use jojoe77777\FormAPI\SimpleForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\form\layout\MenuForm;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
@@ -58,22 +59,30 @@ class SimpleWarpUI extends PluginBase{
 				return true;
 			}
 
-			$form = new MenuForm("Warp list", "Click on a warp to visit");
-			$form->setTag(self::LIST_FORM_TAG); // optional; allows other plugins to identify this form
+			/** @var Warp[] $warps */
+			$warps = [];
+
+			$form = new SimpleForm(function(Player $player, int $data = null) use(&$warps) : bool{
+				if($data === null){
+					return true;
+				}
+
+				$warps[$data]->teleport($player);
+				return true;
+			});
+
+			$form->setTitle("Warp list");
+			$form->setContent("Click on a warp to visit");
 
 			foreach($this->swApi->getWarpManager() as $warp){
 				/** @var Warp $warp */
 				if($warp->canUse($sender)){
-					$form->add(new WarpMenuOption($warp, $sender)); // no warp icon :P
+					$warps[] = $warp;
+					$form->addButton($warp->getName() . ($sender->hasPermission(SimpleWarpPermissions::LIST_WARPS_COMMAND_XYZ) ? (" (" . $warp->getDestination()->toString() . ")") : ""));
 				}
 			}
 
-			$sender->sendMenuForm($form, function(MenuForm $form) use ($sender){
-				/** @var WarpMenuOption $option */
-				$option = $form->getSelectedOption(); // where are the generics >.<
-				$option->getWarp()->teleport($sender);
-			});
-
+			$sender->sendForm($form);
 			return true;
 		}
 

@@ -1,5 +1,8 @@
+---
 projects:
   SimpleWarpUI:
     path: SimpleWarpUI
-  SimpleWarpUI-TargetSelector:
-    path: SimpleWarpUI-TargetSelector
+    libs:
+    - src: jojoe77777/FormAPI/libFormAPI
+      version: ^1.3
+...
