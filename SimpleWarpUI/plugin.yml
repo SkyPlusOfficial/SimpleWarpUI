@@ -1,6 +1,6 @@
 name: SimpleWarpUI
 version: 0.1.0
-api: [3.0.0-ALPHA11]
+api: 3.0.0
 main: SOFe\Tests\MosaicForms\SimpleWarpUI\SimpleWarpUI
 depend: [SimpleWarp]
 
